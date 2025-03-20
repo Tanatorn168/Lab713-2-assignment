@@ -1,5 +1,5 @@
 // filepath: c:\Users\CAMT-STD\Desktop\Tanatorn_672132168\953713\Lab713-2-assignment\src\server.ts
-import express, { Request, Response } from "express";
+import express, { Request, Response } from 'express';
 
 const app = express();
 const port = 3000;
@@ -23,12 +23,49 @@ const books = [
         author_name: "Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides",
         description: "Elements of reusable object-oriented software.",
         groups: ["Software Architecture", "OOP"]
+    },
+    {
+        title: "Refactoring",
+        author_name: "Martin Fowler",
+        description: "Improving the design of existing code.",
+        groups: ["Software Engineering", "Refactoring"]
+    },
+    {
+        title: "You Don't Know JS",
+        author_name: "Kyle Simpson",
+        description: "A book series on JavaScript.",
+        groups: ["JavaScript", "Programming"]
+    },
+    {
+        title: "Introduction to Algorithms",
+        author_name: "Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein",
+        description: "A comprehensive textbook on algorithms.",
+        groups: ["Algorithms", "Computer Science"]
+    },
+    {
+        title: "The Mythical Man-Month",
+        author_name: "Frederick P. Brooks Jr.",
+        description: "Essays on software engineering.",
+        groups: ["Software Engineering", "Project Management"]
+    },
+    {
+        title: "Code Complete",
+        author_name: "Steve McConnell",
+        description: "A practical handbook of software construction.",
+        groups: ["Software Development", "Best Practices"]
     }
 ];
 
 // Endpoint เพื่อคืนค่าหนังสือทั้งหมด
-app.get("/books", (req: Request, res: Response) => {
-    res.json(books);
+app.get("/books", (req, res) => {
+    if (req.query.title) {
+        const title = req.query.title;
+        const filteredBooks = books.filter((book) => book.title === title);
+        res.json(filteredBooks);
+    }
+    else {
+        res.json(books);
+    }
 });
 
 // Start Server
