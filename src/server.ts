@@ -1,5 +1,5 @@
-import express from 'express';
-import { getAllBooks, getBookByTitle, getBookById, addBook } from './repository/booksRepository';
+import express, {Request, Response} from 'express';
+import bookRoute from "./routes/bookRoute";
 import multer from 'multer';
 import { uploadFile } from './services/uploadFileService';
 import dotenv from 'dotenv';
@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 const port = 3000;
-
+app.use('/books', bookRoute);
 app.use(express.json());
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -30,41 +30,6 @@ app.post('/upload', upload.single('file'), async (req: any, res: any) => {
         res.status(500).send('Error uploading file.');
       }
     });
-
-// Endpoint เพื่อคืนค่าหนังสือทั้งหมด
-app.get("/books", async (req, res) => {
-    const title = req.query.title as string | undefined;
-
-    if (title) {
-        const book = await getBookByTitle(title);
-        if (book) {
-            res.json(book);
-        } else {
-            res.status(404).send("Book not found");
-        }
-    } else {
-        const books = await getAllBooks();
-        res.json(books);
-    }
-});
-
-// Endpoint เพื่อคืนค่าหนังสือตาม ID
-app.get("/books/:id", async (req, res) => {
-    const id = parseInt(req.params.id);
-    const book = await getBookById(id);
-    if (book) {
-        res.json(book);
-    } else {
-        res.status(404).send("Book not found");
-    }
-});
-
-// Endpoint เพื่อเพิ่มหนังสือใหม่
-app.post("/books", async (req, res) => {
-    const newBook = req.body;
-    const addedBook = await addBook(newBook);
-    res.status(201).json(addedBook);
-});
 
 // Start Server
 app.listen(port, () => {
